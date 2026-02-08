@@ -19,3 +19,50 @@
 </ul>
 {%endif%}
 {%endmacro%}
+
+{% macro datos(name, label, type='text', value='') %}
+<div class="mb-2">
+    <label class="form-label text-white">{{ label }}</label>
+    <input type="{{ type }}" name="{{ name }}" value="{{ value }}" class="form-control form-control-sm">
+</div>
+{% endmacro %}
+
+{% macro radio_cineco() %}
+<div class="mb-2">
+    <label class="form-label text-white d-block">Tarjeta Cineco</label>
+    <div class="form-check form-check-inline text-white">
+        <input class="form-check-input" type="radio" name="cineco" id="si" value="Si" checked>
+        <label class="form-check-label" for="si">Sí</label>
+    </div>
+    <div class="form-check form-check-inline text-white">
+        <input class="form-check-input" type="radio" name="cineco" id="no" value="No">
+        <label class="form-check-label" for="no">No</label>
+    </div>
+</div>
+{% endmacro %}
+
+<!-- macros.html -->
+{% macro campoForm(field) %}
+<div class="mb-2">
+    <label class="form-label text-white">{{ field.label }}</label>
+    {{ field(class="form-control form-control-sm") }}
+    
+    {% if field.errors %}
+        {% for error in field.errors %}
+        <p class="text-danger-custom">{{ error }}</p>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro render_check_radio(field) %}
+<div class="mb-3">
+    <label class="form-label text-white d-block">{{ field.label }}</label>
+    {% for subfield in field %}
+        <div class="form-check form-check-inline text-white">
+            {{ subfield(class="form-check-input") }}
+            {{ subfield.label(class="form-check-label") }}
+        </div>
+    {% endfor %}
+</div>
+{% endmacro %}

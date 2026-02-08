@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+{% block content %}
+{% import "macros.html" as macros %}
+
+<style>
+    /* Tu CSS permanece IGUAL */
+    body {
+        background: url("{{ url_for('static', filename='img/cinepolisDOS.png') }}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .cinepolis-container {
+        background-color: transparent;
+        border-radius: 12px;
+        max-width: 900px;
+        margin: auto;
+        padding: 30px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .cinepolis-title {
+        background-color: #eaeaea;
+        color: #000;
+        padding: 5px 40px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 25px;
+    }
+
+    .box {
+        background-color: transparent;
+        border: 2px solid #ffffff;
+        padding: 15px;
+        height: 100%;
+    }
+
+    .box-title {
+        color: #ffffff;
+        font-weight: bold;
+        border-bottom: 1px solid #ffffff;
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+    }
+
+    label {
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    .acciones-box {
+        background-color: transparent;
+        border: 2px solid #ffffff;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .btn-cinepolis {
+        background-color: #eaeaea;
+        color: #000;
+        font-weight: bold;
+        width: 110px;
+    }
+
+    .logo-text {
+        font-size: 48px;
+        font-weight: bold;
+        color: #ffffff;
+        margin-top: 30px;
+    }
+
+    .subtitle {
+        color: #ffffff;
+        letter-spacing: 2px;
+        font-size: 16px;
+    }
+    
+    .text-danger-custom { 
+        color: #ffcccc; 
+        font-size: 0.8em; 
+        list-style: none; 
+        padding: 0; 
+        margin: 0; 
+    }
+
+    .alert-custom {
+        color: red; 
+        background: #ffe6e6; 
+        border: 1px solid red; 
+        padding: 10px; 
+        margin-bottom: 20px;
+        border-radius: 5px;
+        text-align: center;
+        font-weight: bold;
+    }
+</style>
+
+<div class="cinepolis-container mt-4">
+
+    <div class="text-center">
+        <div class="cinepolis-title">Cinépolis</div>
+    </div>
+
+    <!-- SOLO RECUADRO ROJO PARA ERROR DE BOLETOS -->
+    {% if error %}
+        <div class="alert-custom">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+        {{ form.hidden_tag() }}
+        
+        <div class="row justify-content-center">
+            <div class="col-md-6 mb-3">
+                <div class="box">
+                    <div class="box-title">Entradas</div>
+                    
+                    <!-- Usamos la macro para cada campo -->
+                    {{ macros.campoForm(form.nombre) }}
+                    {{ macros.campoForm(form.compradores) }}
+                    
+                    <!-- Campo de radio especial -->
+                    <div class="mb-2">
+                        <label class="form-label d-block">{{ form.cineco.label }}</label>
+                        {% for subfield in form.cineco %}
+                            <div class="form-check form-check-inline text-white">
+                                {{ subfield(class="form-check-input") }}
+                                {{ subfield.label(class="form-check-label") }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {{ macros.campoForm(form.boletas) }}
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="box">
+                    <div class="box-title">Salidas</div>
+                    <label>Valor a Pagar</label>
+                    <input type="text" class="form-control mt-2" readonly
+                           value="${{ "{:,.0f}".format(res) if res else '' }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-5">
+                <div class="acciones-box">
+                    <div class="box-title">Acciones</div>
+                    {{ form.submit(class="btn btn-cinepolis mx-2") }}
+                    <a href="/cinepolis" class="btn btn-cinepolis mx-2">Salir</a>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="text-center">
+        <div class="logo-text">Cinépolis</div>
+        <div class="subtitle">LA CAPITAL DEL CINE</div>
+    </div>
+</div>
+{% endblock %}

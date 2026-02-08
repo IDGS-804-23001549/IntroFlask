@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request
 import math
 import forms
+import cinepolisForm
+import pizzeriaForm
 from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
@@ -118,6 +120,66 @@ def alumnos():
         email = alumno_clas.correo.data
     return render_template('alumnos.html', form=alumno_clas, mat=mat, nom=nom, ape=ape, email=email)
 
+@app.route('/cinepolis', methods=['GET', 'POST'])
+def cinepolis():
+    form = cinepolisForm.CinepolisForm()
+    res = 0
+    error = None
+    
+    # Si el método es POST y el formulario pasa las validaciones de WTForms
+    if request.method == 'POST' and form.validate():
+        nombre = form.nombre.data
+        cant_compradores = form.compradores.data
+        cant_boletas = form.boletas.data
+        tarjeta_cineco = form.cineco.data
+        
+        # Validación de límite de boletos
+        max_boletas = cant_compradores * 7
+        if cant_boletas > max_boletas:
+            error = f"No puedes comprar más de {max_boletas} boletas por comprador."
+        else:
+            # --- SOLO LA LÓGICA DE CÁLCULO SI NO HAY ERROR ---
+            precio_base = 12000 
+            subtotal = cant_boletas * precio_base
+
+            if cant_boletas > 5:
+                subtotal *= 0.85  # 15% de descuento 
+            elif 3 <= cant_boletas <= 5:
+                subtotal *= 0.90  # 10% de descuento 
+            
+            if tarjeta_cineco == 'Si':
+                subtotal *= 0.90  # 10% adicional 
+            
+            res = subtotal
+                
+    return render_template('cinepolis.html', form=form, res=res, error=error)
+
+@app.route('/pizzeria', methods=['GET', 'POST'])
+def pizzeria():
+    form = pizzeriaForm.PizzeriaForm()
+    res = 0
+    nombre_cliente = ""
+    tamanio_txt = ""
+    ingredientes_txt = ""
+    
+    if request.method == 'POST' and form.validate():
+        nombre_cliente = form.nombre.data
+        precio_tamanio = int(form.tamanio.data)
+        
+        opciones_tamanio = dict(form.tamanio.choices)
+        tamanio_txt = opciones_tamanio.get(form.tamanio.data)
+
+        opciones_ing = dict(form.ingredientes.choices)
+        seleccionados = [opciones_ing.get(i) for i in form.ingredientes.data]
+        ingredientes_txt = ", ".join(seleccionados) if seleccionados else "Sin ingredientes extra"
+        
+        cant_ingredientes = len(form.ingredientes.data)
+        num_pizzas = form.num_pizzas.data
+        
+        costo_por_pizza = precio_tamanio + (cant_ingredientes * 10)
+        res = costo_por_pizza * num_pizzas
+        
+    return render_template('pizzeria.html', form=form, res=res, nombre=nombre_cliente, tamanio=tamanio_txt, ingredientes=ingredientes_txt)
+
 if __name__ == '__main__':
-    csrf.init_app(app)
     app.run(debug = True)

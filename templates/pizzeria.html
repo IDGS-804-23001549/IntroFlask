@@ -1,0 +1,43 @@
+{% extends "layoutDos.html" %}
+{% block content %}
+{% import "macros.html" as macros %}
+
+<div class="container bg-secondary p-4 rounded">
+    <h2 class="text-white text-center mb-4">Pizzería "DIEGURI"</h2>
+    
+    <form method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="row">
+            <div class="col-md-6 border-end">
+                <h4 class="text-warning">Datos del Cliente</h4>
+                {{ macros.campoForm(form.nombre) }}
+                {{ macros.campoForm(form.direccion) }}
+                {{ macros.campoForm(form.telefono) }}
+            </div>
+
+            <div class="col-md-6">
+                <h4 class="text-warning">Selecciona tu Pizza</h4>
+                {{ macros.render_check_radio(form.tamanio) }}
+                {{ macros.render_check_radio(form.ingredientes) }}
+                {{ macros.campoForm(form.num_pizzas) }}
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            {{ form.agregar(class="btn btn-success btn-lg") }}
+        </div>
+    </form>
+
+    <hr class="text-white">
+
+    {% if res > 0 %}
+    <div class="alert alert-light mt-4 mx-auto" style="max-width: 500px;">
+        <h4>Resumen de Pedido:</h4>
+        <p><strong>Cliente:</strong> {{ nombre }}</p>
+        <p><strong>Tamanio:</strong> {{ tamanio }}</p>
+        <p><strong>Ingredientes:</strong> {{ ingredientes }}</p>
+        <p><strong>Total a pagar:</strong> ${{ "{:,.2f}".format(res) }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
