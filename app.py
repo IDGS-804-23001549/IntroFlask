@@ -126,19 +126,16 @@ def cinepolis():
     res = 0
     error = None
     
-    # Si el método es POST y el formulario pasa las validaciones de WTForms
     if request.method == 'POST' and form.validate():
         nombre = form.nombre.data
         cant_compradores = form.compradores.data
         cant_boletas = form.boletas.data
         tarjeta_cineco = form.cineco.data
         
-        # Validación de límite de boletos
         max_boletas = cant_compradores * 7
         if cant_boletas > max_boletas:
             error = f"No puedes comprar más de {max_boletas} boletas por comprador."
         else:
-            # --- SOLO LA LÓGICA DE CÁLCULO SI NO HAY ERROR ---
             precio_base = 12000 
             subtotal = cant_boletas * precio_base
 

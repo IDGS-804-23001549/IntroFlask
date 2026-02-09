@@ -3,7 +3,6 @@
 {% import "macros.html" as macros %}
 
 <style>
-    /* Tu CSS permanece IGUAL */
     body {
         background: url("{{ url_for('static', filename='img/cinepolisDOS.png') }}");
         background-size: cover;
@@ -103,7 +102,6 @@
         <div class="cinepolis-title">Cinépolis</div>
     </div>
 
-    <!-- SOLO RECUADRO ROJO PARA ERROR DE BOLETOS -->
     {% if error %}
         <div class="alert-custom">
             {{ error }}
@@ -118,11 +116,9 @@
                 <div class="box">
                     <div class="box-title">Entradas</div>
                     
-                    <!-- Usamos la macro para cada campo -->
                     {{ macros.campoForm(form.nombre) }}
                     {{ macros.campoForm(form.compradores) }}
                     
-                    <!-- Campo de radio especial -->
                     <div class="mb-2">
                         <label class="form-label d-block">{{ form.cineco.label }}</label>
                         {% for subfield in form.cineco %}
